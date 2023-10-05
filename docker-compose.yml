@@ -20,9 +20,6 @@ services:
       - --entrypoints.appwrite_web.address=:80
       - --entrypoints.appwrite_websecure.address=:443
     restart: unless-stopped
-    #ports:
-    #  - 80:80
-    #  - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - appwrite-config:/storage/config:ro
@@ -35,7 +32,7 @@ services:
       - proxy_apps
 
   appwrite:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     container_name: appwrite
     <<: *x-logging
     restart: unless-stopped
@@ -78,7 +75,9 @@ services:
       - _APP_SYSTEM_SECURITY_EMAIL_ADDRESS
       - _APP_SYSTEM_RESPONSE_FORMAT
       - _APP_OPTIONS_ABUSE
+      - _APP_OPTIONS_ROUTER_PROTECTION
       - _APP_OPTIONS_FORCE_HTTPS
+      - _APP_OPTIONS_FUNCTIONS_FORCE_HTTPS
       - _APP_OPENSSL_KEY_V1
       - _APP_DOMAIN
       - _APP_DOMAIN_TARGET
@@ -161,7 +160,7 @@ services:
       - _APP_ASSISTANT_OPENAI_API_KEY
 
   appwrite-realtime:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: realtime
     container_name: appwrite-realtime
     <<: *x-logging
@@ -190,6 +189,7 @@ services:
       - _APP_ENV
       - _APP_WORKER_PER_CORE
       - _APP_OPTIONS_ABUSE
+      - _APP_OPTIONS_ROUTER_PROTECTION
       - _APP_OPENSSL_KEY_V1
       - _APP_REDIS_HOST
       - _APP_REDIS_PORT
@@ -205,7 +205,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-audits:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-audits
     <<: *x-logging
     container_name: appwrite-worker-audits
@@ -232,7 +232,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-webhooks:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-webhooks
     <<: *x-logging
     container_name: appwrite-worker-webhooks
@@ -255,7 +255,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-deletes:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-deletes
     <<: *x-logging
     container_name: appwrite-worker-deletes
@@ -311,7 +311,7 @@ services:
       - _APP_EXECUTOR_HOST
 
   appwrite-worker-databases:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-databases
     <<: *x-logging
     container_name: appwrite-worker-databases
@@ -338,7 +338,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-builds:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-builds
     <<: *x-logging
     container_name: appwrite-worker-builds
@@ -375,11 +375,34 @@ services:
       - _APP_FUNCTIONS_BUILD_TIMEOUT
       - _APP_FUNCTIONS_CPUS
       - _APP_FUNCTIONS_MEMORY
+      - _APP_FUNCTIONS_SIZE_LIMIT
       - _APP_OPTIONS_FORCE_HTTPS
+      - _APP_OPTIONS_FUNCTIONS_FORCE_HTTPS
       - _APP_DOMAIN
+      - _APP_STORAGE_DEVICE
+      - _APP_STORAGE_S3_ACCESS_KEY
+      - _APP_STORAGE_S3_SECRET
+      - _APP_STORAGE_S3_REGION
+      - _APP_STORAGE_S3_BUCKET
+      - _APP_STORAGE_DO_SPACES_ACCESS_KEY
+      - _APP_STORAGE_DO_SPACES_SECRET
+      - _APP_STORAGE_DO_SPACES_REGION
+      - _APP_STORAGE_DO_SPACES_BUCKET
+      - _APP_STORAGE_BACKBLAZE_ACCESS_KEY
+      - _APP_STORAGE_BACKBLAZE_SECRET
+      - _APP_STORAGE_BACKBLAZE_REGION
+      - _APP_STORAGE_BACKBLAZE_BUCKET
+      - _APP_STORAGE_LINODE_ACCESS_KEY
+      - _APP_STORAGE_LINODE_SECRET
+      - _APP_STORAGE_LINODE_REGION
+      - _APP_STORAGE_LINODE_BUCKET
+      - _APP_STORAGE_WASABI_ACCESS_KEY
+      - _APP_STORAGE_WASABI_SECRET
+      - _APP_STORAGE_WASABI_REGION
+      - _APP_STORAGE_WASABI_BUCKET
 
   appwrite-worker-certificates:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-certificates
     <<: *x-logging
     container_name: appwrite-worker-certificates
@@ -413,7 +436,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-functions:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-functions
     <<: *x-logging
     container_name: appwrite-worker-functions
@@ -450,7 +473,7 @@ services:
       - _APP_LOGGING_PROVIDER
 
   appwrite-worker-mails:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-mails
     <<: *x-logging
     container_name: appwrite-worker-mails
@@ -478,7 +501,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-messaging:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-messaging
     <<: *x-logging
     container_name: appwrite-worker-messaging
@@ -500,7 +523,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-worker-migrations:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: worker-migrations
     <<: *x-logging
     container_name: appwrite-worker-migrations
@@ -531,7 +554,7 @@ services:
       - _APP_MIGRATIONS_FIREBASE_CLIENT_SECRET
 
   appwrite-maintenance:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: maintenance
     <<: *x-logging
     container_name: appwrite-maintenance
@@ -565,7 +588,7 @@ services:
       - _APP_MAINTENANCE_RETENTION_SCHEDULES
 
   appwrite-usage:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: usage
     container_name: appwrite-usage
     <<: *x-logging
@@ -596,7 +619,7 @@ services:
       - _APP_LOGGING_CONFIG
 
   appwrite-schedule:
-    image: appwrite/appwrite:1.4.2
+    image: appwrite/appwrite:1.4.4
     entrypoint: schedule
     container_name: appwrite-schedule
     <<: *x-logging
@@ -609,6 +632,7 @@ services:
     environment:
       - _APP_ENV
       - _APP_WORKER_PER_CORE
+      - _APP_OPENSSL_KEY_V1
       - _APP_REDIS_HOST
       - _APP_REDIS_PORT
       - _APP_REDIS_USER
@@ -620,7 +644,7 @@ services:
       - _APP_DB_PASS
 
   appwrite-assistant:
-    image: appwrite/assistant:0.2.1
+    image: appwrite/assistant:0.2.2
     container_name: appwrite-assistant
     <<: *x-logging
     restart: unless-stopped
@@ -634,7 +658,7 @@ services:
     hostname: appwrite-executor
     <<: *x-logging
     stop_signal: SIGINT
-    image: openruntimes/executor:0.4.0
+    image: openruntimes/executor:0.4.2
     networks:
       - appwrite
       - runtimes
